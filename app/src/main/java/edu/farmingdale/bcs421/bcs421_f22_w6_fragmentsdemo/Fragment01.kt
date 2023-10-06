@@ -9,5 +9,4 @@ import android.view.ViewGroup
 
 class Fragment01 : Fragment(R.layout.fragment_01) {
 
-
 }

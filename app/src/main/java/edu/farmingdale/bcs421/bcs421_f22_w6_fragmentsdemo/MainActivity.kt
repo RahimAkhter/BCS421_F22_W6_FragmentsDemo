@@ -5,26 +5,24 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
-
+import androidx.core.content.edit
 
 
 class MainActivity : AppCompatActivity() {
-    val SHAREDPREF_FILENAME= "MYSHAREDPREF_FILE"
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+		setContentView(R.layout.activity_main)
 
-        findViewById<Button>(R.id.helloWorldBtn).setOnClickListener{
-            storeInSharedPref()
-            startActivity(Intent(this, MainActivity2::class.java))
-        }
-    }
+		findViewById<Button>(R.id.helloWorldBtn).setOnClickListener {
+			storeInSharedPref()
+			startActivity(Intent(this, MainActivity2::class.java))
+		}
+	}
 
-    private fun storeInSharedPref(){
-        var sharedpref= getSharedPreferences(SHAREDPREF_FILENAME, MODE_PRIVATE)
-        var editor=sharedpref.edit()
-        editor.putString("KEY", "This value is stored in shared pref")
-        editor.commit()
-    }
+	private fun storeInSharedPref() {
+		getPreferences().edit(true) {
+			putString("KEY", "This value is stored in shared pref")
+		}
+	}
 }
