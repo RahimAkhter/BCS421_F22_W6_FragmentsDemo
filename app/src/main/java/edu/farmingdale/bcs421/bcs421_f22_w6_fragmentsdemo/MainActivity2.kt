@@ -1,16 +1,26 @@
 package edu.farmingdale.bcs421.bcs421_f22_w6_fragmentsdemo
 
 import android.os.Bundle
+import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
+import androidx.core.text.isDigitsOnly
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import edu.farmingdale.bcs421.bcs421_f22_w6_fragmentsdemo.databinding.ActivityMain2Binding
 
 class MainActivity2 : AppCompatActivity() {
+	companion object {
+		private const val TEXT_SIZE = "TEXT_SIZE"
+		private const val TEXT_CONTENT = "SILLY"
+	}
 
 	private lateinit var binding: ActivityMain2Binding
 
 	private val fragment1 = Fragment01()
 	private val fragment2 = Fragment02()
+	private val preferences
+		get() = getPreferences()
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -25,6 +35,29 @@ class MainActivity2 : AppCompatActivity() {
 			navigate(fragment2)
 			readFromSharedPref()
 		}
+
+		binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+			override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+				setSize(progress)
+			}
+
+			override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+
+			override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+		})
+
+		val size = preferences.getInt(TEXT_SIZE, 12)
+		binding.tv1.textSize = size.toFloat()
+		binding.editText01.setText(size.toString())
+		binding.seekBar.progress = size
+	}
+
+	private fun setSize(size: Int) {
+		preferences.edit(true) {
+			putInt(TEXT_SIZE, size)
+		}
+		binding.tv1.textSize = size.toFloat()
+		binding.editText01.setText(size.toString())
 	}
 
 	private fun navigate(fragment: Fragment) {
@@ -35,7 +68,6 @@ class MainActivity2 : AppCompatActivity() {
 	}
 
 	private fun readFromSharedPref() {
-		val sharedPref = getPreferences()
-		binding.tv1.text = sharedPref.getString("KEY", "NOT_FOUND")
+		binding.tv1.text = preferences.getString(TEXT_CONTENT, "This value is stored in shared pref")
 	}
 }
